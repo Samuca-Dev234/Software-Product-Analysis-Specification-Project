@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+import numpy as np
 
 class DataExtractor:
     def __init__(self):
@@ -18,6 +19,13 @@ class DataExtractor:
 
     def set_nome_acoes(self, labels: dict):
         self.dataframe.rename(columns=labels, inplace=True)
+
+    def calcular_taxa_retorno_diaria(self):
+        retorno_diario = self.dataframe.pct_change()
+
+        for coluna in retorno_diario.columns:
+            self.dataframe[f'{coluna}_retorno_diario'] = retorno_diario[coluna]
+
 
     def salvar_acoes(self, file_name: str):
         self.dataframe.to_csv(f"./base/{file_name}.csv")

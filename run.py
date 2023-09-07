@@ -18,6 +18,9 @@ column_mapping = {
 
 
 dados.set_nome_colunas(labels=column_mapping)
+dados.calcular_taxa_retorno_diaria()
+
+dados.calcular_retorno_e_volatilidade_anual()
 
 
 dados.salvar_acoes(file_name='teste')
