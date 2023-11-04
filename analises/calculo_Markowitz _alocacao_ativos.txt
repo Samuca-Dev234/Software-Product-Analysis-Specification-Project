@@ -1,12 +1,12 @@
-Foi feito o cálculo de Markowitz com 100000 repetições.
-O Sharpe Ratio foi de 0.32.
+Foi feito o cálculo de Markowitz com 200 repetições.
+O Sharpe Ratio foi de 0.24.
 Os pesos são:
-ggbr: 0.24
-itub: 0.15
-rapt: 0.15
-romi: 0.27
-Wweg: 0.19
-A volatilidade foi de 0.38.
-O retorno foi de 0.22.
+ggbr: 0.28
+itub: 0.02
+rapt: 0.20
+romi: 0.35
+Wweg: 0.15
+A volatilidade foi de 0.36.
+O retorno foi de 0.18.
 
 Lembrando que retornos passados não são garantia de retornos futuros.

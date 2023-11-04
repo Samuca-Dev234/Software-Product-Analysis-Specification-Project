@@ -101,6 +101,52 @@ class FinanceAnalysis:
 
         return melhor_sharpe_ratio, melhores_pesos, lista_retorno_esperado, lista_volatilidade_esperada, lista_sharpe_ratio, melhor_volatilidade, melhor_retorno
 
+    def calcular_capm(self):
+        
+        dataset_normalizado = self.dataframe.copy()
+
+        for i in self.dataframe.columns:
+            dataset_normalizado[i] = self.dataframe[i] / self.dataframe[i][0]
+
+        dataset_taxa_retorno = (dataset_normalizado / dataset_normalizado.shift(1)) - 1
+        dataset_taxa_retorno.fillna(0, inplace=True)
+
+        betas = []
+        alphas = []
+        for ativo in dataset_taxa_retorno.columns[:-1]:
+            beta, alpha = np.polyfit(dataset_taxa_retorno['ibov'], dataset_taxa_retorno[ativo], 1)
+            betas.append(beta)
+            alphas.append(alpha)
+
+        retorno_mercado = dataset_taxa_retorno['ibov'].mean() * 252
+        taxa_selic_historico = np.array([12.75, 14.25, 12.25, 6.5, 5.0, 2.0, 9.25, 13.75]).mean() / 100
+        capm_empresas = []
+        for i, ativo in enumerate(dataset_taxa_retorno.columns[:-1]):
+            capm_empresas.append(taxa_selic_historico+ (betas[i] * (retorno_mercado- taxa_selic_historico)))
+
+        
+    
+        output_folder = './analises/'
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+
+        with open(f"./analises/calculo_CAPM.txt", 'w') as file:
+            file.write("**O que é CAPM?**\n")
+            file.write("O CAPM é um modelo de precificação de ativos que estima o retorno esperado de um ativo, dado seu risco. O risco é medido pelo beta do ativo, que é uma medida de sua sensibilidade ao risco do mercado.\n")
+            file.write("\n**Exemplo:**\n")
+            file.write("Considere um ativo com beta de 1. Isso significa que o ativo se move na mesma direção do mercado, com a mesma magnitude. Se o mercado subir 10%, o ativo também subirá 10%. Se o mercado cair 10%, o ativo também cairá 10%.\n\n")
+            file.write(f"a taxa livre de risco considerada foi: {taxa_selic_historico:.2f}\n\n")
+            file.write("Resultados do CAPM:\n")
+
+            for i in range(len(self.dataframe.columns[:-1])):
+                file.write(f"{self.dataframe.columns[i]}: {capm_empresas[i]:.3f}\n")
+
+            file.write("Betas:\n")
+            for i in range(len(self.dataframe.columns[:-1])):
+                file.write(f"{self.dataframe.columns[i]}: {betas[i]:.2f}\n")
+            
+
+
     def salvar_acoes(self):
         if not os.path.exists('./base/acoes.csv'):
             self.dataframe.to_csv("./base/acoes.csv")

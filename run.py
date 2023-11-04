@@ -20,8 +20,9 @@ column_mapping = {
 dados.set_nome_colunas(labels=column_mapping)
 
 #dados.calcular_taxa_retorno_diaria()
+#taxa_selic_historico = np.array([12.75, 14.25, 12.25, 6.5, 5.0, 2.0, 9.25, 13.75])
+#dados.alocacao_portfolio(dinheiro_total=100000, sem_risco=taxa_selic_historico.mean() / 100, repeticoes=200)
 
-taxa_selic_historico = np.array([12.75, 14.25, 12.25, 6.5, 5.0, 2.0, 9.25, 13.75])
-dados.alocacao_portfolio(dinheiro_total=100000, sem_risco=taxa_selic_historico.mean() / 100, repeticoes=100000)
+dados.calcular_capm()
 
 dados.salvar_acoes()
