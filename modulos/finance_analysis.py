@@ -2,6 +2,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import sys
+import plotly.express as px
 import os
 
 
@@ -145,6 +146,47 @@ class FinanceAnalysis:
             for i in range(len(self.dataframe.columns[:-1])):
                 file.write(f"{self.dataframe.columns[i]}: {betas[i]:.2f}\n")
             
+
+    def monte_carlo_previsao(self, ativo: str, dias_a_frente: int, simulacoes: int):
+        dataset = self.dataframe.copy()
+        dataset = pd.DataFrame(dataset[ativo])
+
+        dataset_normalizado = dataset.copy()
+        for i in dataset:
+            dataset_normalizado[i] = dataset[i] / dataset[i][0]
+
+        dataset_taxa_retorno = np.log(1 + dataset_normalizado.pct_change())
+        dataset_taxa_retorno.fillna(0, inplace=True)
+
+        media = dataset_taxa_retorno.mean()
+        variancia = dataset_taxa_retorno.var()
+
+        drift = media - (0.5 * variancia)
+        desvio_padrao = dataset_taxa_retorno.std()
+        Z = np.random.normal(size=(dias_a_frente, simulacoes))
+        retornos_diarios = np.exp(drift.values + desvio_padrao.values * Z)
+
+        previsoes = np.zeros_like(retornos_diarios)
+        previsoes[0] = dataset.iloc[-1]
+
+        for dia in range(1, dias_a_frente):
+            previsoes[dia] = previsoes[dia - 1] * retornos_diarios[dia]
+
+        
+        # Criar e salvar o gráfico como um arquivo HTML
+        figura = px.line(title='Previsões do preço das ações - ' + ativo)
+        for i in range(simulacoes):
+            figura.add_scatter(y=previsoes.T[i], name=f'Simulação {i+1}')
+            
+        output_folder = './analises/'
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+
+        figura.write_html(f'{output_folder}/{ativo}_monte_carlo.html')
+
+        # Salvar previsões em um arquivo XLSX
+        previsoes_df = pd.DataFrame(previsoes.T, columns=[f'Dia_{i+1}' for i in range(dias_a_frente)])
+        previsoes_df.to_excel(f'./analises/{ativo}_previsoes.xlsx', index=False)
 
 
     def salvar_acoes(self):

@@ -1,0 +1,20 @@
+**O que é CAPM?**
+O CAPM é um modelo de precificação de ativos que estima o retorno esperado de um ativo, dado seu risco. O risco é medido pelo beta do ativo, que é uma medida de sua sensibilidade ao risco do mercado.
+
+**Exemplo:**
+Considere um ativo com beta de 1. Isso significa que o ativo se move na mesma direção do mercado, com a mesma magnitude. Se o mercado subir 10%, o ativo também subirá 10%. Se o mercado cair 10%, o ativo também cairá 10%.
+
+a taxa livre de risco considerada foi: 0.09
+
+Resultados do CAPM:
+ggbr: 0.036
+itub: 0.046
+rapt: 0.033
+romi: 0.047
+Wweg: 0.054
+Betas:
+ggbr: 1.13
+itub: 0.93
+rapt: 1.19
+romi: 0.92
+Wweg: 0.79
